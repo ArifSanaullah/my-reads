@@ -22,24 +22,30 @@ export const getAll = () =>
     .then((res) => res.json())
     .then((data) => data.books);
 
-export const update = (book, shelf) =>
-  fetch(`${api}/books/${book.id}`, {
+export const update = async (book, shelf) => {
+  const res = await fetch(`${api}/books/${book.id}`, {
     method: "PUT",
     headers: {
       ...headers,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ shelf }),
-  }).then((res) => res.json());
+  });
+  return await res.json();
+}
+;
 
-export const search = (query) =>
-  fetch(`${api}/search`, {
-    method: "POST",
-    headers: {
-      ...headers,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ query }),
-  })
-    .then((res) => res.json())
-    .then((data) => data.books);
+export const search = async (query) => {
+  if (query) {
+    const res = await fetch(`${api}/search`, {
+      method: "POST",
+      headers: {
+        ...headers,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ query }),
+    });
+    const data = await res.json();
+    return data.books;
+  }
+};
