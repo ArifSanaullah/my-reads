@@ -1,9 +1,9 @@
 import React from "react";
+import { Route, withRouter } from "react-router-dom";
 import * as BooksAPI from "./BooksAPI";
 import "./App.css";
 import SearchBooks from "./SearchBooks";
 import BooksLists from "./BooksLists";
-import { Route } from "react-router-dom";
 
 class BooksApp extends React.Component {
   constructor(props) {
@@ -15,14 +15,49 @@ class BooksApp extends React.Component {
        * users can use the browser's back and forward buttons to navigate between
        * pages, as well as provide a good URL they can bookmark and share.
        */
-      showSearchPage: false,
       booksToRead: [],
       booksRead: [],
       booksReading: [],
+      changedShelf: null,
     };
+    this.onShelfChange = this.onShelfChange.bind(this);
+  }
+
+  onShelfChange(book, target) {
+    const changedShelf = target.value;
+    const { booksRead, booksReading, booksToRead } = this.state;
+    this.setState({ changedShelf }, () => {
+      if (changedShelf) {
+        BooksAPI.update(book, changedShelf).then((books) => {
+          const prevBooks = [...booksReading, ...booksToRead, ...booksRead];
+
+          const read = prevBooks.filter((book) => books.read.includes(book.id));
+
+          const currentlyReading = prevBooks.filter((book) =>
+            books.currentlyReading.includes(book.id)
+          );
+
+          const wantToRead = prevBooks.filter((book) =>
+            books.wantToRead.includes(book.id)
+          );
+
+          this.setState({
+            booksRead: read,
+            booksReading: currentlyReading,
+            booksToRead: wantToRead,
+            changedShelf: null,
+          });
+          this.props.history.push("/");
+        });
+      }
+    });
   }
 
   componentDidMount() {
+    this.fetchBooks();
+  }
+
+  fetchBooks() {
     BooksAPI.getAll().then((books) => {
       books.forEach((book) => {
         switch (book.shelf) {
@@ -55,7 +90,12 @@ class BooksApp extends React.Component {
     const { booksRead, booksReading, booksToRead } = this.state;
     return (
       <div className="app">
-        <Route exact path="/search" render={() => <SearchBooks />} />
+        <Route
+          exact
+          path="/search"
+          render={() => <SearchBooks onShelfChange={this.onShelfChange} />}
+        />
+
         <Route
           exact
           path="/"
@@ -64,6 +104,7 @@ class BooksApp extends React.Component {
               booksRead={booksRead}
               booksReading={booksReading}
               booksToRead={booksToRead}
+              onShelfChange={this.onShelfChange}
             />
           )}
         />
@@ -72,4 +113,4 @@ class BooksApp extends React.Component {
   }
 }
 
-export default BooksApp;
+export default withRouter(BooksApp);

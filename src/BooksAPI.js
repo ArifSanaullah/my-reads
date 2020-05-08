@@ -32,8 +32,7 @@ export const update = async (book, shelf) => {
     body: JSON.stringify({ shelf }),
   });
   return await res.json();
-}
-;
+};
 
 export const search = async (query) => {
   if (query) {

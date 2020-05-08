@@ -4,8 +4,8 @@ import * as BooksAPI from "./BooksAPI";
 import BooksShelf from "./BooksShelf";
 
 class SearchBooks extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       query: "",
       books: [],
@@ -51,20 +51,17 @@ class SearchBooks extends React.Component {
           </div>
         </div>
         <div className="search-books-results">
-          {/* <ol className="books-grid">
-            {this.state.books &&
-              this.state.books.map((book) => (
-                <li key={book.id}>
-                  <Book book={book} />
-                </li>
-              ))}
-          </ol> */}
           {this.state.books && this.state.query && (
-            <BooksShelf books={this.state.books} />
+            <BooksShelf
+              books={this.state.books}
+              onShelfChange={this.props.onShelfChange}
+              shelf="none"
+            />
           )}
         </div>
       </div>
     );
   }
 }
+
 export default SearchBooks;

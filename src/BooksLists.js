@@ -1,8 +1,8 @@
 import React from "react";
-import BooksShelf from "./BooksShelf";
 import { Link } from "react-router-dom";
+import BooksShelf from "./BooksShelf";
 
-function BooksLists({ booksRead, booksReading, booksToRead }) {
+function BooksLists({ booksRead, booksReading, booksToRead, onShelfChange }) {
   return (
     <div className="list-books">
       <div className="list-books-title">
@@ -10,9 +10,24 @@ function BooksLists({ booksRead, booksReading, booksToRead }) {
       </div>
       <div className="list-books-content">
         <div>
-          <BooksShelf heading="Currently Reading" books={booksReading} />
-          <BooksShelf heading="Want to read" books={booksToRead} />
-          <BooksShelf heading="Read" books={booksRead} />
+          <BooksShelf
+            heading="Currently Reading"
+            books={booksReading}
+            onShelfChange={onShelfChange}
+            shelf="currentlyReading"
+          />
+          <BooksShelf
+            heading="Want to read"
+            books={booksToRead}
+            onShelfChange={onShelfChange}
+            shelf="wantToRead"
+          />
+          <BooksShelf
+            heading="Read"
+            books={booksRead}
+            onShelfChange={onShelfChange}
+            shelf="read"
+          />
         </div>
       </div>
       <div className="open-search">

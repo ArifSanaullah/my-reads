@@ -1,6 +1,7 @@
 import React from "react";
 
-function Book({ book }) {
+function Book({ book, onShelfChange, shelf }) {
+  const { imageLinks, title, authors } = book;
   return (
     <div className="book">
       <div className="book-top">
@@ -9,12 +10,14 @@ function Book({ book }) {
           style={{
             width: 128,
             height: 193,
-            backgroundImage: `url(${book.imageLinks &&
-              book.imageLinks.thumbnail})`,
+            backgroundImage: `url(${imageLinks && imageLinks.thumbnail})`,
           }}
         />
         <div className="book-shelf-changer">
-          <select>
+          <select
+            onChange={(e) => onShelfChange(book, e.target)}
+            defaultValue={shelf}
+          >
             <option value="move" disabled>
               Move to...
             </option>
@@ -25,14 +28,13 @@ function Book({ book }) {
           </select>
         </div>
       </div>
-      <div className="book-title">{book.title}</div>
-      {book.authors
-        ? book.authors.map((author) => (
-            <div className="book-authors" key={author}>
-              {author}
-            </div>
-          ))
-        : null}
+      <div className="book-title">{title}</div>
+      {authors &&
+        authors.map((author) => (
+          <div className="book-authors" key={author}>
+            {author}
+          </div>
+        ))}
     </div>
   );
 }
